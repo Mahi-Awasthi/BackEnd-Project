@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Student</title>
+</head>
+
+<body>
+    <h1>all student data</h1>
+
+    <script>
+        document.getElementsByTagName("h1")[0].innerHTML = "CONTACT";
+        fetch("http://localhost:3000")
+            .then((responce) => { return responce.json() })
+            .then((data) => {
+                console.log(data);
+
+                const table = document.createElement('table');
+                const tableBody = document.createElement('tbody');
+
+                data.forEach(person => {
+                    const row = document.createElement('tr');
+                    const fnameCell = document.createElement('td');
+                    const lnameCell = document.createElement('td');
+                    const fname1Cell = document.createElement('td');
+                    const lname1Cell = document.createElement('td');
+                    const emailCell = document.createElement('td');
+                    const phoneCell = document.createElement('td');
+
+                    fnameCell.textContent = person.fname;
+                    lnameCell.textContent = person.lname;
+                    fname1Cell.textContent = person.fname1;
+                    lname1Cell.textContent = person.lname1;
+                    emailCell.textContent = person.email;
+                    phoneCell.textContent = person.phone;
+
+                    row.appendChild(fnameCell);
+                    row.appendChild(lnameCell);
+                    row.appendChild(fname1Cell);
+                    row.appendChild(lname1Cell);
+                    row.appendChild(emailCell);
+                    row.appendChild(phoneCell);
+                    
+                    tableBody.appendChild(row);
+                });
+
+                table.appendChild(tableBody);
+                document.body.appendChild(table);
+            })
+    </script>
+</body>
+
+</html>
