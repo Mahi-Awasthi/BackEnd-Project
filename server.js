@@ -1,13 +1,14 @@
 const http = require("http");
 const fs = require("fs");
 const qs = require("querystring");
+const path = 'C:/Users/Dell/OneDrive/Desktop/BackEnd/BackEnd-Project/user.json'; // Keep this path if needed for JSON file
 const server = http.createServer((req, res) => {
     let { method } = req;
 
     if (method == "GET") {
-        //get request handling
+        // Get request handling
         if (req.url === "/") {
-            console.log("inside / route and Get rquest");
+            console.log("inside / route and GET request");
             fs.readFile("User.json", "utf8", (err, data) => {
                 if (err) {
                     console.log(err);
@@ -19,7 +20,6 @@ const server = http.createServer((req, res) => {
                     res.end(data);
                 }
             });
-            //   res.end("welcome to home route");
         } else if (req.url == "/allstudent") {
             fs.readFile("allstudent.html", "utf8", (err, data) => {
                 if (err) {
@@ -31,70 +31,68 @@ const server = http.createServer((req, res) => {
                 }
             });
         } else if (req.url === "/register") {
-            fs.readFile("register.html", "utf8", (err, data) => {
+            // Updated file name from register.html to contact.html
+            fs.readFile("contact.html", "utf8", (err, data) => {
                 if (err) {
                     res.writeHead(500);
                     res.end("Server Error");
                 } else {
-                    console.log("sending register.html file");
+                    console.log("sending contact.html file");
                     res.end(data);
                 }
             });
-        } else{
-            //error handlings
-            console.log(req.url);  
+        } else {
+            // Error handling for routes not found
+            console.log(req.url);
             res.writeHead(404);
             res.end("Not Found");
         }
     }
 
-
-        // post method handling and // Store the user data in a file 
+    // POST method handling: Store the user data in a file
     else {
         if (req.url === "/register") {
-            console.log("inside /register route and post request");
+            console.log("inside /register route and POST request");
             let body = "";
             req.on("data", (chunk) => {
                 body += chunk.toString();
-                //  console.log(chunk);
             });
             req.on("end", () => {
-                let readdata = fs.readFileSync("User.json", "utf-8"); //data stored in string type
+                let readdata = fs.readFileSync("User.json", "utf-8"); // Read data from User.json
                 console.log(readdata);
 
-                if (!readdata) {  // if file is empty add an empty array
+                if (!readdata) {  // If the file is empty, add an empty array
                     fs.writeFileSync("User.json", JSON.stringify([]));
                 }
-                else {      //if file have already some data
+                else {      // If the file already has data
                     let jsonData = JSON.parse(readdata);
                     let users = [...jsonData];
                     console.log(users);
 
-                    let convertedbody = qs.decode(body);
-                    users.push(convertedbody);
+                    let convertedbody = qs.decode(body); // Parse the data from the form
+                    users.push(convertedbody);  // Add the new user data
                     console.log(convertedbody);
+
+                    // Write the new data back to User.json
                     fs.writeFile("User.json", JSON.stringify(users), (err) => {
                         if (err) {
                             console.log(err);
                         } else {
-                            console.log("userdata inserted succefuly");
+                            console.log("User data inserted successfully");
                         }
                     });
-
                 }
 
                 res.writeHead(200, { "Content-Type": "text/html" });
                 res.end("Registration successful!");
             });
-        }
-        else {
+        } else {
             res.writeHead(404);
-            res.end("Not Found in post request");
+            res.end("Not Found in POST request");
         }
-
     }
 });
 
-server.listen(3000,() => {
+server.listen(3000, () => {
     console.log("Server listening on port 3000");
 });
