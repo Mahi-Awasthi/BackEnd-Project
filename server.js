@@ -1,7 +1,6 @@
 const http = require("http");
 const fs = require("fs");
 const qs = require("querystring");
-const path = 'C:/Users/Dell/OneDrive/Desktop/BackEnd/BackEnd-Project/user.json'; // Keep this path if needed for JSON file
 const server = http.createServer((req, res) => {
     let { method } = req;
 
