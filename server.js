@@ -4,11 +4,11 @@ const qs = require("querystring");
 const server = http.createServer((req, res) => {
     let { method } = req;
 
-    if (method == "GET") {
-        // Get request handling
+    // GET request handling
+    if (method === "GET") {
         if (req.url === "/") {
             console.log("inside / route and GET request");
-            fs.readFile("User.json", "utf8", (err, data) => {
+            fs.readFile("Expenses.json", "utf8", (err, data) => {
                 if (err) {
                     console.log(err);
                     res.writeHead(500);
@@ -16,6 +16,37 @@ const server = http.createServer((req, res) => {
                 } else {
                     console.log(data);
                     res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(data);
+                }
+            });
+        } else if (req.url === "/expensetracker") {
+            fs.readFile("ExpenseTracker.html", "utf8", (err, data) => {
+                if (err) {
+                    res.writeHead(500);
+                    res.end("Server Error");
+                } else {
+                    console.log("Sending ExpenseTracker.html file");
+                    res.end(data);
+                }
+            });
+        }
+            else if (req.url == "/etdata") {
+                fs.readFile("ETData.html", "utf8", (err, data) => {
+                    if (err) {
+                        res.writeHead(500);
+                        res.end("Server Error");
+                    } else {
+                        console.log("sending ETData.html file");
+                        res.end(data);
+                    }
+                });
+        } else if (req.url === "/contact") {
+            fs.readFile("contact.html", "utf8", (err, data) => {
+                if (err) {
+                    res.writeHead(500);
+                    res.end("Server Error");
+                } else {
+                    console.log("Sending contact.html file");
                     res.end(data);
                 }
             });
@@ -29,17 +60,6 @@ const server = http.createServer((req, res) => {
                     res.end(data);
                 }
             });
-        } else if (req.url === "/contact") {
-            // Updated file name from contact.html to contact.html
-            fs.readFile("contact.html", "utf8", (err, data) => {
-                if (err) {
-                    res.writeHead(500);
-                    res.end("Server Error");
-                } else {
-                    console.log("sending contact.html file");
-                    res.end(data);
-                }
-            });
         } else {
             // Error handling for routes not found
             console.log(req.url);
@@ -48,9 +68,47 @@ const server = http.createServer((req, res) => {
         }
     }
 
-    // POST method handling: Store the user data in a file
-    else {
-        if (req.url === "/contact") {
+    // POST request handling
+    else if (method === "POST") {
+        if (req.url === "/expensetracker") {
+            console.log("inside /addExpense route and POST request");
+            let body = "";
+            req.on("data", (chunk) => {
+                body += chunk.toString();
+            });
+            req.on("end", () => {
+                // Read existing data from Expenses.json
+                let readdata;
+                try {
+                    readdata = fs.readFileSync("Expenses.json", "utf8");
+                    if (!readdata) {
+                        readdata = "[]"; // Initialize as an empty array if file is empty
+                    }
+                } catch (err) {
+                    console.log(err);
+                    readdata = "[]"; // Initialize as an empty array if file doesn't exist
+                }
+
+                const jsonData = JSON.parse(readdata);
+                const convertedBody = qs.decode(body);
+
+                // Append the new expense
+                jsonData.push(convertedBody);
+
+                // Write the updated data back to Expenses.json
+                fs.writeFile("Expenses.json", JSON.stringify(jsonData), (err) => {
+                    if (err) {
+                        console.log(err);
+                        res.writeHead(500);
+                        res.end("Failed to add expense.");
+                    } else {
+                        console.log("Expense added successfully");
+                        res.writeHead(200, { "Content-Type": "text/html" });
+                        res.end("Expense added successfully!");
+                    }
+                });
+            });
+        } else if (req.url === "/contact") {
             console.log("inside /contact route and POST request");
             let body = "";
             req.on("data", (chunk) => {
@@ -62,8 +120,7 @@ const server = http.createServer((req, res) => {
 
                 if (!readdata) {  // If the file is empty, add an empty array
                     fs.writeFileSync("User.json", JSON.stringify([]));
-                }
-                else {      // If the file already has data
+                } else {      // If the file already has data
                     let jsonData = JSON.parse(readdata);
                     let users = [...jsonData];
                     console.log(users);
@@ -89,6 +146,9 @@ const server = http.createServer((req, res) => {
             res.writeHead(404);
             res.end("Not Found in POST request");
         }
+    } else {
+        res.writeHead(404);
+        res.end("Not Found");
     }
 });
 
