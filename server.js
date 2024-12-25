@@ -29,8 +29,8 @@ const server = http.createServer((req, res) => {
                     res.end(data);
                 }
             });
-        } else if (req.url === "/register") {
-            // Updated file name from register.html to contact.html
+        } else if (req.url === "/contact") {
+            // Updated file name from contact.html to contact.html
             fs.readFile("contact.html", "utf8", (err, data) => {
                 if (err) {
                     res.writeHead(500);
@@ -50,8 +50,8 @@ const server = http.createServer((req, res) => {
 
     // POST method handling: Store the user data in a file
     else {
-        if (req.url === "/register") {
-            console.log("inside /register route and POST request");
+        if (req.url === "/contact") {
+            console.log("inside /contact route and POST request");
             let body = "";
             req.on("data", (chunk) => {
                 body += chunk.toString();
