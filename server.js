@@ -1,3 +1,4 @@
+//server.js=ddetails.html,user1.json
 const http = require("http");
 const fs = require("fs");
 const qs = require("querystring");
@@ -8,7 +9,7 @@ const server = http.createServer((req, res) => {
     if (method === "GET") {
         if (req.url === "/") {
             console.log("inside / route and GET request");
-            fs.readFile("Expenses.json", "utf8", (err, data) => {
+            fs.readFile("user1.json", "utf8", (err, data) => {
                 if (err) {
                     console.log(err);
                     res.writeHead(500);
@@ -19,19 +20,19 @@ const server = http.createServer((req, res) => {
                     res.end(data);
                 }
             });
-        } else if (req.url === "/expensetracker") {
-            fs.readFile("ExpenseTracker.html", "utf8", (err, data) => {
+        } else if (req.url === "/dashboard") {
+            fs.readFile("dashboard.html", "utf8", (err, data) => {
                 if (err) {
                     res.writeHead(500);
                     res.end("Server Error");
                 } else {
-                    console.log("Sending ExpenseTracker.html file");
+                    console.log("Sending dashboard.html file");
                     res.end(data);
                 }
             });
         }
-            else if (req.url == "/etdata") {
-                fs.readFile("ETData.html", "utf8", (err, data) => {
+            else if (req.url == "/ddetails") {
+                fs.readFile("ddetails.html", "utf8", (err, data) => {
                     if (err) {
                         res.writeHead(500);
                         res.end("Server Error");
@@ -40,13 +41,15 @@ const server = http.createServer((req, res) => {
                         res.end(data);
                     }
                 });
-        } else if (req.url === "/contact") {
-            fs.readFile("contact.html", "utf8", (err, data) => {
+         
+            }
+            else if (req.url === "/register") {
+            fs.readFile("register.html", "utf8", (err, data) => {
                 if (err) {
                     res.writeHead(500);
                     res.end("Server Error");
                 } else {
-                    console.log("Sending contact.html file");
+                    console.log("Sending register.html file");
                     res.end(data);
                 }
             });
@@ -66,11 +69,11 @@ const server = http.createServer((req, res) => {
             res.writeHead(404);
             res.end("Not Found");
         }
-    }
+     }
 
     // POST request handling
     else if (method === "POST") {
-        if (req.url === "/expensetracker") {
+        if (req.url === "/dashboard") {
             console.log("inside /addExpense route and POST request");
             let body = "";
             req.on("data", (chunk) => {
@@ -80,7 +83,7 @@ const server = http.createServer((req, res) => {
                 // Read existing data from Expenses.json
                 let readdata;
                 try {
-                    readdata = fs.readFileSync("Expenses.json", "utf8");
+                    readdata = fs.readFileSync("user1.json", "utf8");
                     if (!readdata) {
                         readdata = "[]"; // Initialize as an empty array if file is empty
                     }
@@ -96,19 +99,20 @@ const server = http.createServer((req, res) => {
                 jsonData.push(convertedBody);
 
                 // Write the updated data back to Expenses.json
-                fs.writeFile("Expenses.json", JSON.stringify(jsonData), (err) => {
+                fs.writeFile("user1.json", JSON.stringify(jsonData), (err) => {
                     if (err) {
                         console.log(err);
                         res.writeHead(500);
-                        res.end("Failed to add expense.");
+                        res.end("Failed to add .");
                     } else {
-                        console.log("Expense added successfully");
+                        console.log("added successfully");
                         res.writeHead(200, { "Content-Type": "text/html" });
-                        res.end("Expense added successfully!");
+                        res.end(" added successfully!");
                     }
                 });
             });
-        } else if (req.url === "/contact") {
+        } else 
+        if (req.url === "/register") {
             console.log("inside /contact route and POST request");
             let body = "";
             req.on("data", (chunk) => {

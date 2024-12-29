@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 12px;
+        }
+
+        th {
+            background-color: #6c7d5a;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            font-size: 0.9rem;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Event Dashboard</h1>
+
+    <script>
+        document.getElementsByTagName("h1")[0].innerHTML = "Event Dashboard";
+        fetch("http://localhost:3000")
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+
+                const table = document.createElement('table');
+                const tableBody = document.createElement('tbody');
+
+                data.forEach(event => {
+                    const row = document.createElement('tr');
+                    const eventPurposeCell = document.createElement('td');
+                    const guestsCell = document.createElement('td');
+                    const date1Cell = document.createElement('td');
+                    const budgetCell = document.createElement('td');
+                    const themeCell = document.createElement('td');
+                    const venueCell = document.createElement('td');
+                    const foodBeverageCell = document.createElement('td');
+                    const entertainmentCell = document.createElement('td');
+                    const decorationsCell = document.createElement('td');
+
+                    eventPurposeCell.textContent = event.eventPurpose;
+                    guestsCell.textContent = event.guests;
+                    date1Cell.textContent = event.date1;
+                    budgetCell.textContent = event.budget;
+                    themeCell.textContent = event.theme;
+                    venueCell.textContent = event.venue;
+                    foodBeverageCell.textContent = event.foodBeverage;
+                    entertainmentCell.textContent = event.entertainment;
+                    decorationsCell.textContent = event.decorations;
+                
+                    row.appendChild(eventPurposeCell);
+                    row.appendChild(guestsCell);
+                    row.appendChild(date1Cell);
+                    row.appendChild(budgetCell);
+                    row.appendChild(themeCell);
+                    row.appendChild(venueCell);
+                    row.appendChild(foodBeverageCell);
+                    row.appendChild(entertainmentCell);
+                    row.appendChild(decorationsCell);
+               
+
+                    tableBody.appendChild(row);
+                });
+
+                table.appendChild(tableBody);
+                document.body.appendChild(table);
+            })
+    </script>
+</body>
+
+</html>
